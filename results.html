@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="See your Conversational Pieces game result and celebrate the conversation you shared.">
+    <meta name="theme-color" content="#282944">
+    <title>Your game results — Conversational Pieces</title>
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body id="top">
+    <a class="skip-link" href="#main-content">Skip to results</a>
+
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="brand" href="index.html" aria-label="Conversational Pieces home">
+                <span class="brand-mark" aria-hidden="true">C</span>
+                <span class="brand-name">Conversational<span>Pieces</span></span>
+            </a>
+            <a class="text-link" href="index.html">Back to home <span aria-hidden="true">↗</span></a>
+        </div>
+    </header>
+
+    <main id="main-content" class="results-main">
+        <section class="results-card section-wrap" aria-labelledby="results-title">
+            <p class="eyebrow">Eight turns, shared together</p>
+            <h1 id="results-title">Your conversation <span>results.</span></h1>
+            <p class="results-error" id="results-error" role="alert" hidden></p>
+
+            <div id="results-content" hidden>
+                <p class="results-winner" id="results-winner" aria-live="polite"></p>
+
+                <div class="results-scores" aria-label="Player scores">
+                    <article class="results-player">
+                        <p class="eyebrow" id="player-a-label"></p>
+                        <p class="results-score"><span id="player-a-score"></span><span class="score-out-of"> / 20</span></p>
+                    </article>
+                    <article class="results-player">
+                        <p class="eyebrow" id="player-b-label"></p>
+                        <p class="results-score"><span id="player-b-score"></span><span class="score-out-of"> / 20</span></p>
+                    </article>
+                </div>
+
+                <section class="relationship-status" aria-labelledby="relationship-status-title">
+                    <p class="eyebrow" id="relationship-status-title">Your relationship status</p>
+                    <p class="combined-score"><span id="combined-score"></span><span> / 40 together</span></p>
+                    <p class="relationship-message" id="relationship-message"></p>
+                    <p class="results-disclaimer">A playful reflection on this game—not a measure or assessment of your relationship.</p>
+                </section>
+
+                <p class="results-turn-count" id="results-turn-count"></p>
+                <div class="results-actions">
+                    <a class="button button-red" href="index.html#game">Play a new game <span aria-hidden="true">↗</span></a>
+                    <a class="button button-white results-home-button" href="index.html">Back to homepage</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="section-wrap footer-inner">
+            <a class="brand brand-footer" href="index.html" aria-label="Conversational Pieces, home">
+                <span class="brand-mark" aria-hidden="true">C</span>
+                <span class="brand-name">Conversational<span>Pieces</span></span>
+            </a>
+            <p>Made for meaningful moments, big and small.</p>
+            <a class="footer-top" href="#top">Back to top ↑</a>
+        </div>
+    </footer>
+
+    <script src="script/game-config.js" defer></script>
+    <script src="script/results.js" defer></script>
+</body>
+</html>
