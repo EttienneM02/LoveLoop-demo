@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Thoughtful conversation starters for couples. Find a reason to laugh, connect, flirt, and learn something new about each other.">
-    <meta name="theme-color" content="#282944">
+    <meta name="theme-color" content="#17131f">
     <title>Conversational Pieces — Better dates start with better conversations</title>
     <link rel="stylesheet" href="style/style.css">
 </head>
@@ -24,7 +24,7 @@
                 <a class="nav-link" href="#about">About</a>
             </nav>
 
-            <a class="button button-small button-red header-cta" href="#topics">Start a conversation <span aria-hidden="true">↗</span></a>
+            <a class="button button-small button-red header-cta" href="#game">Start a conversation <span aria-hidden="true">↗</span></a>
         </div>
     </header>
 
@@ -35,7 +35,7 @@
                 <h1 id="hero-title">Better dates start with <span>better conversations.</span></h1>
                 <p class="hero-description">Discover questions that help you laugh, connect, flirt, reflect, and learn something new about each other.</p>
                 <div class="hero-actions">
-                    <a class="button button-red" href="#topics">Start a conversation <span aria-hidden="true">↗</span></a>
+                    <a class="button button-red" href="#game">Start a conversation <span aria-hidden="true">↗</span></a>
                     <a class="text-link" href="#topics">Explore topics <span aria-hidden="true">↓</span></a>
                 </div>
                 <p class="hero-note"><span aria-hidden="true">♡</span> Made for two, wherever your story is.</p>
@@ -161,14 +161,21 @@
         <section class="game-section section-wrap" id="game" aria-labelledby="game-title">
             <div class="section-heading">
                 <div>
-                    <p class="eyebrow">Play together</p>
-                    <h2 id="game-title">Make it a <span>conversation game.</span></h2>
+                    <p class="eyebrow">A little game for two</p>
+                    <h2 id="game-title">Make room for <span>a great conversation.</span></h2>
                 </div>
-                <button class="button button-blue" id="start-game-link" type="button">Start a game <span aria-hidden="true">↗</span></button>
             </div>
+            <p class="persistence-status" id="persistence-status" role="status" aria-live="polite" hidden></p>
 
-            <form class="game-setup-form" id="game-setup-form" hidden>
-                <p>Choose names, then take turns answering and rating each other’s responses.</p>
+            <section class="game-panel resume-panel" id="resume-game-panel" aria-labelledby="resume-game-title" hidden>
+                <p class="eyebrow">A game is already in progress</p>
+                <h3 id="resume-game-title">Pick up right where you left off.</h3>
+                <p id="resume-game-description"></p>
+                <a class="button button-red" id="resume-game-link" href="game.html">Resume game <span aria-hidden="true">↗</span></a>
+            </section>
+
+            <form class="game-setup-form" id="game-setup-form">
+                <p>Choose names, then take turns answering aloud and rating one another’s responses.</p>
                 <div class="game-name-fields">
                     <label for="player-a-name">Player 1 name
                         <input id="player-a-name" name="playerA" type="text" maxlength="30" autocomplete="off" value="Player A" required>
@@ -177,61 +184,27 @@
                         <input id="player-b-name" name="playerB" type="text" maxlength="30" autocomplete="off" value="Player B" required>
                     </label>
                 </div>
-                <button class="button button-red" type="submit">Create game</button>
-                <p class="game-error" id="game-error" role="alert"></p>
-            </form>
-
-            <div class="game-panel" id="game-ready" hidden>
-                <p class="game-turn-label" id="game-turn-label"></p>
-                <p class="eyebrow" id="game-player-label"></p>
-                <p class="game-topic-label" id="game-topic-label"></p>
-                <h3 class="game-question" id="game-question-text"></h3>
-                <p class="game-instruction">When the answering player is ready, start the 90-second timer.</p>
-                <button class="button button-red" id="start-answer" type="button">Start timer <span aria-hidden="true">▶</span></button>
-            </div>
-
-            <div class="game-panel" id="game-answering" hidden>
-                <div class="game-timer-row">
-                    <p class="game-turn-label" id="answering-turn-label"></p>
-                    <p class="game-timer" id="game-timer" role="timer" aria-live="off" aria-label="90 seconds remaining">1:30</p>
+                <div class="game-mode-section" style="display: flex; flex-direction:column" >
+                <div class="game-topic-field">
+                    <label for="game-topic" >Choose a topic
+                        <select id="game-topic" name="topic" required>
+                            <option value="" disabled selected>Select a topic</option>
+                            <option value="getting-to-know-each-other">Getting to know each other</option>
+                            <option value="fun-playful">Fun &amp; playful</option>
+                            <option value="romance-attraction">Romance &amp; attraction</option>
+                            <option value="future-dreams">Future &amp; dreams</option>
+                            <option value="interests-hobbies">Interests &amp; hobbies</option>
+                            <option value="personality-values">Personality &amp; values</option>
+                            <option value="relationships">Relationships</option>
+                            <option value="deep-emotional">Deep &amp; emotional</option>
+                        </select>
+                    </label>
                 </div>
-                <p class="eyebrow" id="answering-player-label">Your turn to answer</p>
-                <p class="game-topic-label" id="answering-topic-label"></p>
-                <h3 class="game-question" id="answering-question-label"></h3>
-                <p class="game-instruction">Share your answer out loud. Your spoken response is not recorded.</p>
-                <button class="button button-red" id="finish-answer" type="button">I’m finished <span aria-hidden="true">↗</span></button>
-                <p class="visually-hidden" id="timer-announcement" aria-live="polite"></p>
-            </div>
+                <button class="button button-red" type="submit">Create game</button>
 
-            <div class="game-panel" id="game-rating" hidden>
-                <p class="game-turn-label" id="rating-turn-label"></p>
-                <p class="eyebrow" id="rating-player-label"></p>
-                <p class="game-topic-label" id="rating-topic-label"></p>
-                <h3 class="game-question" id="rating-question-label"></h3>
-                <p class="game-instruction">The answer was shared verbally during the round and has not been recorded.</p>
-                <form id="rating-form">
-                    <fieldset class="rating-options">
-                        <legend>How would you rate the answer? (1 to 5)</legend>
-                        <div class="rating-buttons">
-                            <label><input type="radio" name="rating" value="1"><span>1</span><span class="visually-hidden"> out of 5</span></label>
-                            <label><input type="radio" name="rating" value="2"><span>2</span><span class="visually-hidden"> out of 5</span></label>
-                            <label><input type="radio" name="rating" value="3"><span>3</span><span class="visually-hidden"> out of 5</span></label>
-                            <label><input type="radio" name="rating" value="4"><span>4</span><span class="visually-hidden"> out of 5</span></label>
-                            <label><input type="radio" name="rating" value="5"><span>5</span><span class="visually-hidden"> out of 5</span></label>
-                        </div>
-                    </fieldset>
-                    <button class="button button-red" id="submit-rating" type="submit">Submit rating <span aria-hidden="true">↗</span></button>
-                </form>
-                <p class="game-status" id="rating-status" role="status" aria-live="polite"></p>
-            </div>
-
-            <div class="game-panel" id="game-turn-complete" hidden>
-                <p class="game-turn-label" id="completed-turn-label"></p>
-                <p class="eyebrow">Rating recorded</p>
-                <p class="game-status" id="game-status" role="status" aria-live="polite"></p>
-                <button class="button button-red" id="transition-turn" type="button">Next turn <span aria-hidden="true">↗</span></button>
-            </div>
-
+                </div>
+                    <p class="game-error" id="game-error" role="alert"></p>
+            </form>
         </section>
 
         <section class="pace-section" aria-labelledby="pace-title">
@@ -282,9 +255,9 @@
     <script src="script/game-state.js" defer></script>
     <script src="script/questions.js" defer></script>
     <script src="script/game-question-selector.js" defer></script>
+    <script src="script/game-storage.js" defer></script>
     <script src="script/game-session.js" defer></script>
-    <script src="script/game-timer.js" defer></script>
-    <script src="script/game-answer.js" defer></script>
+    <script src="script/game-setup.js" defer></script>
     <script src="script/generator.js" defer></script>
 </body>
 </html>

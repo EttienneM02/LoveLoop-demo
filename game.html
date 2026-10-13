@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Play Conversational Pieces together, one question and one turn at a time.">
+    <meta name="theme-color" content="#17131f">
+    <title>Your conversation game — Conversational Pieces</title>
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body id="top">
+    <a class="skip-link" href="#main-content">Skip to the game</a>
+
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="brand" href="index.html" aria-label="Conversational Pieces home">
+                <span class="brand-mark" aria-hidden="true">C</span>
+                <span class="brand-name">Conversational<span>Pieces</span></span>
+            </a>
+            <a class="text-link" href="index.html">Back to home <span aria-hidden="true">↗</span></a>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <section class="game-section section-wrap" id="game" aria-labelledby="game-title">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">One question at a time</p>
+                    <h1 id="game-title">Stay with <span>the moment.</span></h1>
+                </div>
+            </div>
+            <p class="game-intro">Take turns sharing your answer aloud. Your spoken responses are never recorded.</p>
+            <p class="persistence-status" id="persistence-status" role="status" aria-live="polite" hidden></p>
+
+            <div class="game-panel" id="game-recovery" hidden>
+                <p class="eyebrow">Game unavailable</p>
+                <h2 id="game-recovery-message" role="alert"></h2>
+                <a class="button button-red" href="index.html#game">Return to setup <span aria-hidden="true">↗</span></a>
+            </div>
+
+            <div class="game-panel" id="game-ready" hidden>
+                <p class="game-turn-label" id="game-turn-label"></p>
+                <p class="eyebrow" id="game-player-label"></p>
+                <p class="game-topic-label" id="game-topic-label"></p>
+                <h2 class="game-question" id="game-question-text"></h2>
+                <p class="game-instruction">When the answering player is ready, start the 90-second timer.</p>
+                <button class="button button-red" id="start-answer" type="button">Start timer <span aria-hidden="true">▶</span></button>
+            </div>
+
+            <div class="game-panel" id="game-answering" hidden>
+                <div class="game-timer-row">
+                    <p class="game-turn-label" id="answering-turn-label"></p>
+                    <p class="game-timer" id="game-timer" role="timer" aria-live="off" aria-label="90 seconds remaining">1:30</p>
+                </div>
+                <p class="eyebrow" id="answering-player-label">Your turn to answer</p>
+                <p class="game-topic-label" id="answering-topic-label"></p>
+                <h2 class="game-question" id="answering-question-label"></h2>
+                <p class="game-instruction">Share your answer out loud. Your spoken response is not recorded.</p>
+                <button class="button button-red" id="finish-answer" type="button">I’m finished <span aria-hidden="true">↗</span></button>
+                <p class="visually-hidden" id="timer-announcement" aria-live="polite"></p>
+            </div>
+
+            <div class="game-panel" id="game-rating" hidden>
+                <p class="game-turn-label" id="rating-turn-label"></p>
+                <p class="eyebrow" id="rating-player-label"></p>
+                <p class="game-topic-label" id="rating-topic-label"></p>
+                <h2 class="game-question" id="rating-question-label"></h2>
+                <p class="game-instruction">The answer was shared verbally during the round and has not been recorded.</p>
+                <form id="rating-form">
+                    <fieldset class="rating-options">
+                        <legend>How would you rate the answer? (1 to 5)</legend>
+                        <div class="rating-buttons">
+                            <label><input type="radio" name="rating" value="1"><span>1</span><span class="visually-hidden"> out of 5</span></label>
+                            <label><input type="radio" name="rating" value="2"><span>2</span><span class="visually-hidden"> out of 5</span></label>
+                            <label><input type="radio" name="rating" value="3"><span>3</span><span class="visually-hidden"> out of 5</span></label>
+                            <label><input type="radio" name="rating" value="4"><span>4</span><span class="visually-hidden"> out of 5</span></label>
+                            <label><input type="radio" name="rating" value="5"><span>5</span><span class="visually-hidden"> out of 5</span></label>
+                        </div>
+                    </fieldset>
+                    <button class="button button-red" id="submit-rating" type="submit">Submit rating <span aria-hidden="true">↗</span></button>
+                </form>
+                <p class="game-status" id="rating-status" role="status" aria-live="polite"></p>
+            </div>
+
+            <div class="game-panel" id="game-turn-complete" hidden>
+                <p class="game-turn-label" id="completed-turn-label"></p>
+                <p class="eyebrow">Rating recorded</p>
+                <p class="game-status" id="game-status" role="status" aria-live="polite"></p>
+                <button class="button button-red" id="transition-turn" type="button">Next turn <span aria-hidden="true">↗</span></button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="section-wrap footer-inner">
+            <a class="brand brand-footer" href="index.html" aria-label="Conversational Pieces, home">
+                <span class="brand-mark" aria-hidden="true">C</span>
+                <span class="brand-name">Conversational<span>Pieces</span></span>
+            </a>
+            <p>Made for meaningful moments, big and small.</p>
+            <a class="footer-top" href="#top">Back to top ↑</a>
+        </div>
+    </footer>
+
+    <script src="script/game-config.js" defer></script>
+    <script src="script/game-state.js" defer></script>
+    <script src="script/questions.js" defer></script>
+    <script src="script/game-question-selector.js" defer></script>
+    <script src="script/game-storage.js" defer></script>
+    <script src="script/game-timer.js" defer></script>
+    <script src="script/game-answer.js" defer></script>
+</body>
+</html>
