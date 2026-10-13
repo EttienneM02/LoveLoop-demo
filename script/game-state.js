@@ -56,6 +56,7 @@ function createInitialGameState(playerNames = {}) {
         },
         turns: [],
         usedQuestionIds: [],
+        selectedTopicId: null,
         currentQuestion: null,
         currentRating: null,
         timerRemaining: GAME_CONFIG.answerTimeSeconds,

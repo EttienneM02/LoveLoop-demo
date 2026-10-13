@@ -52,7 +52,8 @@ function selectNextGameQuestion(state, random = Math.random) {
     const topicsWithUnusedQuestions = new Map();
 
     for (const question of catalog) {
-        if (usedQuestionIds.has(question.id)) {
+        if (usedQuestionIds.has(question.id)
+            || (state.selectedTopicId && question.topicId !== state.selectedTopicId)) {
             continue;
         }
 

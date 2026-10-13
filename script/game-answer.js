@@ -1,8 +1,6 @@
-const gamePanel = document.getElementById("game");
-const gameSetupForm = document.getElementById("game-setup-form");
-const playerANameInput = document.getElementById("player-a-name");
-const playerBNameInput = document.getElementById("player-b-name");
-const gameError = document.getElementById("game-error");
+const persistenceStatus = document.getElementById("persistence-status");
+const gameRecoveryPanel = document.getElementById("game-recovery");
+const gameRecoveryMessage = document.getElementById("game-recovery-message");
 const gameReadyPanel = document.getElementById("game-ready");
 const gameAnsweringPanel = document.getElementById("game-answering");
 const gameRatingPanel = document.getElementById("game-rating");
@@ -40,6 +38,15 @@ const TOPIC_LABELS = Object.freeze({
     "deep-emotional": "Deep & emotional"
 });
 
+function persistCurrentGame() {
+    const result = saveGameState(gameState);
+    persistenceStatus.hidden = result.saved;
+    persistenceStatus.textContent = result.saved
+        ? ""
+        : "Your progress is active in this tab, but browser storage is unavailable and it may not survive a refresh.";
+    return result.saved;
+}
+
 function updateTimerDisplay(secondsRemaining) {
     const minutes = Math.floor(secondsRemaining / 60);
     const seconds = secondsRemaining % 60;
@@ -63,7 +70,6 @@ function renderAnswerPhase() {
     const participants = getTurnParticipants(gameState.currentTurn);
     const answeringPlayer = gameState.players[participants.answeringPlayerId];
 
-    gameSetupForm.hidden = true;
     gameReadyPanel.hidden = gameState.phase !== GAME_PHASES.READY;
     gameAnsweringPanel.hidden = gameState.phase !== GAME_PHASES.ANSWERING;
     gameRatingPanel.hidden = gameState.phase !== GAME_PHASES.RATING;
@@ -114,6 +120,7 @@ function beginAnsweringPhase() {
     gameState.phase = GAME_PHASES.ANSWERING;
     gameState.turnDeadline = Date.now() + GAME_CONFIG.answerTimeSeconds * 1000;
     gameState.timerRemaining = GAME_CONFIG.answerTimeSeconds;
+    persistCurrentGame();
     renderAnswerPhase();
 
     startGameTimer({
@@ -133,6 +140,7 @@ function finishAnswering(timerExpired = false) {
     gameState.timerRemaining = timerExpired ? 0 : gameState.timerRemaining;
     gameState.turnDeadline = null;
     gameState.phase = GAME_PHASES.RATING;
+    persistCurrentGame();
     renderAnswerPhase();
     timerAnnouncement.textContent = timerExpired ? "Time is up. The rating phase has started." : "The answering round is complete. The rating phase has started.";
     ratingStatus.textContent = timerExpired
@@ -165,6 +173,7 @@ function submitGameRating(rating) {
         completed: true
     });
     gameState.phase = GAME_PHASES.TURN_COMPLETE;
+    persistCurrentGame();
     renderAnswerPhase();
     gameStatus.textContent = `${rating} points awarded to ${gameState.players[answeringPlayerId].name}.`;
     return true;
@@ -182,6 +191,7 @@ function transitionToNextTurn() {
     const nextTurn = gameState.currentTurn + 1;
     const nextQuestionState = {
         usedQuestionIds: [...gameState.usedQuestionIds],
+        selectedTopicId: gameState.selectedTopicId,
         currentQuestion: gameState.currentQuestion
     };
     const nextQuestion = selectNextGameQuestion(nextQuestionState);
@@ -193,6 +203,7 @@ function transitionToNextTurn() {
     gameState.timerRemaining = GAME_CONFIG.answerTimeSeconds;
     gameState.turnDeadline = null;
     gameState.phase = GAME_PHASES.READY;
+    persistCurrentGame();
     renderAnswerPhase();
     startAnswerButton.focus();
     return true;
@@ -266,7 +277,6 @@ function openGameResults() {
     try {
         const results = createGameResults(gameState);
         sessionStorage.setItem(GAME_CONFIG.storageKeys.latestResults, JSON.stringify(results));
-        gameState.phase = GAME_PHASES.RESULTS;
         window.location.assign("results.html");
         return true;
     } catch (error) {
@@ -276,35 +286,6 @@ function openGameResults() {
         return false;
     }
 }
-
-function showGameSetup() {
-    gameSetupForm.hidden = false;
-    gamePanel.scrollIntoView({
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-        block: "start"
-    });
-    playerANameInput.focus();
-}
-
-gameSetupForm.addEventListener("submit", event => {
-    event.preventDefault();
-    gameError.textContent = "";
-
-    const validation = validatePlayerNames(playerANameInput.value, playerBNameInput.value);
-    if (!validation.isValid) {
-        gameError.textContent = Object.values(validation.errors).join(" ");
-        return;
-    }
-
-    try {
-        startGameSession(validation.names);
-    } catch (error) {
-        gameError.textContent = error instanceof Error ? error.message : "The game session could not be started.";
-        return;
-    }
-
-    renderAnswerPhase();
-});
 
 startAnswerButton.addEventListener("click", beginAnsweringPhase);
 finishAnswerButton.addEventListener("click", () => finishAnswering());
@@ -318,12 +299,39 @@ ratingForm.addEventListener("submit", event => {
 
 transitionTurnButton.addEventListener("click", transitionToNextTurn);
 
-gamePanel.addEventListener("click", event => {
-    if (event.target.closest("#start-game-link")) {
-        showGameSetup();
-    }
-});
+const savedGame = loadGameState();
+if (savedGame.issue) {
+    persistenceStatus.hidden = false;
+    persistenceStatus.textContent = savedGame.issue === "unavailable"
+        ? "Browser storage is unavailable. The saved game cannot be loaded."
+        : "A saved game could not be recovered. It was cleared.";
+}
 
-if (window.location.hash === "#game") {
-    showGameSetup();
+if (savedGame.state) {
+    gameState = savedGame.state;
+    renderAnswerPhase();
+
+    if (gameState.phase === GAME_PHASES.ANSWERING) {
+        const remainingSeconds = Math.max(
+            0,
+            Math.ceil((gameState.turnDeadline - Date.now()) / 1000)
+        );
+        if (remainingSeconds === 0) {
+            finishAnswering(true);
+        } else {
+            updateTimerDisplay(remainingSeconds);
+            startGameTimer({
+                deadline: gameState.turnDeadline,
+                onTick: updateTimerDisplay,
+                onExpire: () => finishAnswering(true)
+            });
+        }
+    }
+} else {
+    gameRecoveryMessage.textContent = savedGame.issue === "unavailable"
+        ? "We couldn’t access this browser’s saved game. Check your storage settings, then try again."
+        : savedGame.issue
+            ? "The saved game was invalid and has been cleared. Return to setup to begin a new game."
+            : "There isn’t an active game on this device yet. Set up a game to get started.";
+    gameRecoveryPanel.hidden = false;
 }

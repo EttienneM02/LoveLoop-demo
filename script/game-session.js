@@ -5,10 +5,20 @@ function createGameSession(playerNames = {}, options = {}) {
         throw new TypeError("The clock source must be a function.");
     }
 
-    const questionCount = buildGameQuestionCatalog(conversationQuestions).length;
+    const catalog = buildGameQuestionCatalog(conversationQuestions);
+    if (options.topicId !== undefined
+        && options.topicId !== null
+        && (typeof options.topicId !== "string" || !Object.hasOwn(conversationQuestions, options.topicId))) {
+        throw new RangeError("Choose a valid conversation topic to start the game.");
+    }
+
+    const availableQuestions = options.topicId
+        ? catalog.filter(question => question.topicId === options.topicId)
+        : catalog;
+    const questionCount = availableQuestions.length;
     if (questionCount < GAME_CONFIG.totalTurns) {
         throw new Error(
-            `A game needs at least ${GAME_CONFIG.totalTurns} unique questions, but only ${questionCount} are available.`
+            `A game needs at least ${GAME_CONFIG.totalTurns} unique questions in the selected topic, but only ${questionCount} are available.`
         );
     }
 
@@ -18,6 +28,7 @@ function createGameSession(playerNames = {}, options = {}) {
     }
 
     const state = createInitialGameState(playerNames);
+    state.selectedTopicId = options.topicId || null;
     const randomToken = Math.floor(getRandomValue(random) * Number.MAX_SAFE_INTEGER).toString(36);
     state.sessionId = `session-${createdAt.toString(36)}-${randomToken}`;
     state.createdAt = new Date(createdAt).toISOString();
